@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none';"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ORION HUD</title>
+  <link rel="stylesheet" href="hud.css"/>
+</head>
+<body>
+  <div id="hud-shell">
+
+    <!-- Input bar -->
+    <div id="hud-bar">
+      <div id="hud-icon">J</div>
+      <input
+        id="hud-input"
+        type="text"
+        placeholder="Ask JARVIS anything…"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      />
+      <div id="hud-spinner" class="hidden"></div>
+      <div id="hud-send" title="Send (Enter)">↗</div>
+    </div>
+
+    <!-- Result area (hidden until there is a result) -->
+    <div id="hud-result" class="hidden">
+      <div id="hud-tool-label" class="hidden"></div>
+      <div id="hud-text"></div>
+      <div id="hud-actions">
+        <button id="hud-open-btn" class="hidden">Open full window</button>
+        <button id="hud-close-btn">Dismiss  esc</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="hud.js"></script>
+</body>
+</html>

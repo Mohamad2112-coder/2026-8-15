@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none';"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JARVIS Assistant</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<main class="shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">J</div>
+      <div><strong>JARVIS</strong><span>WINDOWS AGENT</span></div>
+    </div>
+    <div class="status"><i></i><span id="status">System online</span></div>
+    <nav>
+      <button class="nav active" data-panel="assistant">Command center</button>
+      <button class="nav" data-panel="memory">Memory</button>
+      <button class="nav" data-panel="settings">Settings</button>
+    </nav>
+    <div class="sidebar-foot">PHASE 06<br/><span>PERMISSIONED AGENT CORE</span></div>
+  </aside>
+
+  <!-- ── Workspace ───────────────────────────────────────────────────────── -->
+  <section class="workspace">
+
+    <!-- ════ Command center panel ═══════════════════════════════════════════ -->
+    <section id="assistant" class="panel active">
+      <header class="topline">
+        <div>
+          <p class="eyebrow">JARVIS // LOCAL OPERATIONS</p>
+          <h1>Command center</h1>
+        </div>
+        <div class="header-right">
+          <!-- Mode badge -->
+          <div class="mode-badge" id="mode-badge" title="Active mode">
+            <span id="mode-dot"></span>
+            <span id="mode-label">NORMAL</span>
+          </div>
+          <div class="mic-state">
+            <span id="mic-dot"></span>
+            <span id="voice-status">Microphone off</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="cockpit">
+        <!-- Agent core -->
+        <section class="core-card">
+          <div id="core" class="core idle">
+            <div class="core-ring ring-one"></div>
+            <div class="core-ring ring-two"></div>
+            <div class="core-center">
+              <span id="core-state">IDLE</span>
+              <strong>J</strong>
+            </div>
+          </div>
+          <p id="core-detail">Standing by for your instruction.</p>
+          <button id="listening-toggle" class="listen-button">Enable local listening</button>
+        </section>
+
+        <!-- Operations panel -->
+        <section class="operations">
+          <!-- Task plan card -->
+          <article class="task-card" id="task-card">
+            <p class="label">TASK PLAN</p>
+            <h2 id="task-name">No active task</h2>
+            <p id="task-status" class="task-status-line">Awaiting instruction</p>
+            <!-- Step list (shown when a plan is active) -->
+            <ol id="plan-steps" class="plan-steps hidden"></ol>
+            <!-- Executor approval banner (hidden until needed) -->
+            <div id="executor-approval" class="executor-approval hidden">
+              <p id="executor-approval-msg"></p>
+              <div class="executor-approval-actions">
+                <button id="executor-approve-btn" class="primary">Approve &amp; continue</button>
+                <button id="executor-cancel-btn" class="danger-btn">Cancel task</button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Tool activity -->
+          <article class="activity-card">
+            <p class="label">TOOL ACTIVITY</p>
+            <div id="tool-activity" class="activity-empty">Tools are standing by.</div>
+          </article>
+
+          <!-- System metrics -->
+          <article class="health-card">
+            <p class="label">SYSTEM STATUS</p>
+            <div class="metrics">
+              <div><span>CPU</span><b id="cpu">--%</b></div>
+              <div><span>RAM</span><b id="ram">--%</b></div>
+              <div><span>DISK</span><b id="disk">--%</b></div>
+              <div><span>NETWORK</span><b id="network">--</b></div>
+              <div><span>AI</span><b id="ai-status">LOCAL</b></div>
+              <div><span>VOICE</span><b id="voice-engine">READY</b></div>
+            </div>
+          </article>
+        </section>
+      </div>
+
+      <!-- Conversation -->
+      <div id="conversation" class="conversation" aria-live="polite">
+        <article class="message assistant">
+          <span class="sender">JARVIS</span>
+          <p>Systems initialised. I will show each approved tool operation here.</p>
+        </article>
+      </div>
+
+      <form id="command-form" class="composer">
+        <textarea id="command" rows="1" placeholder="Tell JARVIS what you need..." autofocus></textarea>
+        <button class="send" type="submit">Send <span>↗</span></button>
+      </form>
+      <p class="hint">Wake word: "Jarvis" · Shortcut: Ctrl + Numpad 4 · Microphone audio remains on this PC.</p>
+    </section>
+
+    <!-- ════ Memory panel ═══════════════════════════════════════════════════ -->
+    <section id="memory" class="panel">
+      <header>
+        <p class="eyebrow">PERSISTENT CONTEXT</p>
+        <h1>Memory</h1>
+      </header>
+
+      <!-- Memory controls -->
+      <div class="memory-controls">
+        <input id="memory-search" type="search" placeholder="Search memories…" autocomplete="off"/>
+        <button id="clear-all-memory-btn" class="danger-btn small">Delete all</button>
+      </div>
+
+      <!-- Short-term section -->
+      <section class="memory-section">
+        <p class="label">SESSION MEMORY <span class="label-note">(cleared on exit)</span></p>
+        <div id="short-term-list" class="memory-list">
+          <p class="memory-empty">No session memories yet.</p>
+        </div>
+      </section>
+
+      <!-- Long-term section -->
+      <section class="memory-section">
+        <p class="label">LONG-TERM MEMORY <span class="label-note">(encrypted, persistent)</span></p>
+        <div id="memory-list" class="memory-list">
+          <p class="memory-empty">No saved memories yet.</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- ════ Settings panel ═════════════════════════════════════════════════ -->
+    <section id="settings" class="panel">
+      <header>
+        <p class="eyebrow">SYSTEM CONFIGURATION</p>
+        <h1>Settings</h1>
+      </header>
+      <form id="settings-form" class="settings-form">
+        <label>Model API key <input id="api-key" type="password" autocomplete="off" placeholder="Optional"/></label>
+        <label>Model <input id="model" required/></label>
+        <label>API base URL <input id="base-url" type="url" required/></label>
+        <label class="checkbox-label">
+          <input id="cloud-memory" type="checkbox"/>
+          Enable optional cloud memory sync (disabled by default; sensitive data is never uploaded)
+        </label>
+        <div class="setting-info" id="key-status"></div>
+        <button class="primary" type="submit">Save secure settings</button>
+      </form>
+    </section>
+
+  </section><!-- /workspace -->
+</main>
+
+<template id="message-template">
+  <article class="message"><span class="sender"></span><p></p></article>
+</template>
+
+<script src="renderer.js"></script>
+</body>
+</html>

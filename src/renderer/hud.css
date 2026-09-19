@@ -1,0 +1,180 @@
+/* ── HUD — Floating Quick-Launcher (Ctrl+Alt+Space) ─────────────────────────
+   Glassmorphism dark pill, 340px wide, expands vertically for results.
+   Font: system-ui fallback (no external requests — CSP: connect-src 'none')
+   ─────────────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        rgba(6, 14, 22, 0.82);
+  --border:    rgba(79, 221, 231, 0.22);
+  --accent:    #4fdde7;
+  --accent-dim: rgba(79, 221, 231, 0.12);
+  --text:      #dde8ed;
+  --text-muted:#6e8a94;
+  --radius:    14px;
+  --shadow:    0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px var(--border);
+}
+
+html, body {
+  width: 340px;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shell wrapper ───────────────────────────────────────────────────────── */
+#hud-shell {
+  background: var(--bg);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  /* Electron drag region for the frameless window */
+  -webkit-app-region: drag;
+}
+
+/* ── Input bar ───────────────────────────────────────────────────────────── */
+#hud-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 52px;
+  -webkit-app-region: no-drag;
+}
+
+#hud-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0d3b4f 0%, #134560 100%);
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 10px rgba(79,221,231,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+#hud-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  caret-color: var(--accent);
+  -webkit-app-region: no-drag;
+}
+
+#hud-input::placeholder { color: var(--text-muted); }
+
+#hud-send {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  -webkit-app-region: no-drag;
+}
+
+#hud-send:hover {
+  background: rgba(79,221,231,0.2);
+  box-shadow: 0 0 12px rgba(79,221,231,0.3);
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+#hud-spinner {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(79,221,231,0.25);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Result area ─────────────────────────────────────────────────────────── */
+#hud-result {
+  border-top: 1px solid var(--border);
+  padding: 14px 16px;
+  animation: slideDown 0.18s ease;
+  -webkit-app-region: no-drag;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#hud-tool-label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+#hud-text {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+  max-height: 220px;
+  overflow-y: auto;
+  word-break: break-word;
+  white-space: pre-wrap;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* ── Action buttons ──────────────────────────────────────────────────────── */
+#hud-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+
+#hud-actions button {
+  font-size: 11px;
+  font-family: inherit;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: transparent;
+}
+
+#hud-actions button:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+
+#hud-open-btn {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+#hud-open-btn:hover { background: var(--accent-dim) !important; }
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }

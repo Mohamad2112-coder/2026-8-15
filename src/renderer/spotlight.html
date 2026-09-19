@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JARVIS Spotlight</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      padding: 6px;
+    }
+    .hud-card {
+      background: rgba(7, 16, 25, 0.95);
+      border: 1.5px solid rgba(0, 229, 255, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 229, 255, 0.2);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .input-bar {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      gap: 12px;
+    }
+    .core-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #00e5ff;
+      box-shadow: 0 0 10px #00e5ff;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .core-dot.thinking {
+      animation: pulse 1s infinite alternate;
+      background: #ffaa00;
+      box-shadow: 0 0 14px #ffaa00;
+    }
+    @keyframes pulse { from { transform: scale(0.85); opacity: 0.7; } to { transform: scale(1.2); opacity: 1; } }
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #e6f1f8;
+      font-size: 16px;
+      outline: none;
+      font-weight: 500;
+    }
+    input::placeholder { color: rgba(140, 175, 195, 0.6); }
+    .badge {
+      font-size: 11px;
+      color: rgba(0, 229, 255, 0.8);
+      background: rgba(0, 229, 255, 0.1);
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+    .answer-box {
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 0 18px 14px 18px;
+      font-size: 14px;
+      color: #c9e0ed;
+      line-height: 1.5;
+      display: none;
+      border-top: 1px solid rgba(0, 229, 255, 0.15);
+      margin-top: 4px;
+      padding-top: 10px;
+      user-select: text;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud-card" id="card">
+    <div class="input-bar">
+      <div class="core-dot" id="dot"></div>
+      <input id="query" type="text" placeholder="Ask JARVIS or type a command... (Esc to close)" autofocus autocomplete="off" />
+      <span class="badge">ALT + SPACE</span>
+    </div>
+    <div class="answer-box" id="answer"></div>
+  </div>
+
+  <script>
+    const query = document.getElementById('query');
+    const answer = document.getElementById('answer');
+    const dot = document.getElementById('dot');
+
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        window.orion?.spotlightClose?.();
+      }
+    });
+
+    query.addEventListener('keydown', async e => {
+      if (e.key === 'Enter') {
+        const text = query.value.trim();
+        if (!text) return;
+        
+        dot.classList.add('thinking');
+        answer.style.display = 'block';
+        answer.textContent = 'Thinking...';
+        window.orion?.spotlightExpand?.(160);
+
+        try {
+          const res = await window.orion?.submit(text);
+          dot.classList.remove('thinking');
+          const reply = res?.text || (typeof res === 'string' ? res : 'Done.');
+          answer.textContent = reply;
+          const newHeight = Math.min(360, Math.max(120, answer.scrollHeight + 75));
+          window.orion?.spotlightExpand?.(newHeight);
+        } catch (err) {
+          dot.classList.remove('thinking');
+          answer.textContent = err.message || 'An error occurred.';
+        }
+      }
+    });
+
+    window.orion?.onSpotlightFocus?.(() => {
+      query.value = '';
+      answer.style.display = 'none';
+      answer.textContent = '';
+      window.orion?.spotlightExpand?.(64);
+      query.focus();
+    });
+  </script>
+</body>
+</html>
